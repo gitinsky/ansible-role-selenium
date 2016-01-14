@@ -1,0 +1,4 @@
+- name: eye restart selenium
+  command: bash -c "source /usr/local/rvm/scripts/rvm && eye restart selenium"
+  sudo: yes
+  sudo_user: "root"

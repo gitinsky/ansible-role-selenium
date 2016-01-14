@@ -1,0 +1,19 @@
+ - src: https://github.com/gitinsky/ansible-role-nodejs
+   version: master
+   name: nodejs
+
+ - src: https://github.com/gitinsky/ansible-role-java
+   version: master
+   name: java
+
+ - src: https://github.com/gitinsky/ansible-role-eye
+   version: master
+   name: eye
+   
+ - src: https://github.com/gitinsky/ansible-role-ruby-rvm
+   version: master
+   name: ruby-rvm
+
+ - src: https://github.com/gitinsky/ansible-role-vagrant
+   version: master
+   name: vagrant

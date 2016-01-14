@@ -1,0 +1,31 @@
+---
+- name: install ansible requirements
+  apt: name=python-httplib2 cache_valid_time=86400 update_cache=yes
+
+- name: get page with link to the latest version of Selenium Standalone Server
+  uri: url=http://www.seleniumhq.org/download/ return_content=yes
+  register: selenium_webpage
+  
+- name: define url and version variables
+  set_fact:
+      selenium_standalone_server_url: "{{ selenium_webpage.content|replace('\n','')|regex_replace('^.*Download version <a href=\"([^\"]+)\">([0-9,.]+)</a>.*$','\\1') }}"
+      selenium_standalone_server_version: "{{ selenium_webpage.content|replace('\n','')|regex_replace('^.*Download version <a href=\"([^\"]+)\">([0-9,.]+)</a>.*$','\\2') }}"
+
+- name: show url and version
+  debug: msg="url{{ ':' }} {{ selenium_standalone_server_url }}, version{{ ':' }} {{ selenium_standalone_server_version }}"
+
+- name: ensure selenium_dest_dir exists
+  file: state=directory dest={{ selenium_dest_dir }}
+
+- name: check if Selenium Standalone Server v{{ selenium_standalone_server_version }} already downloaded
+  stat: path={{ selenium_dest_dir }}/selenium-server-standalone-{{ selenium_standalone_server_version }}.jar
+  register: selenium_standalone_server_jar
+
+- name: download Selenium Standalone Server v{{ selenium_standalone_server_version }} if it doesn't exist yet
+  get_url: url={{ selenium_standalone_server_url }} dest={{ selenium_dest_dir }}
+  when: not selenium_standalone_server_jar.stat.exists
+
+- name: create a simlink to the latest version
+  file: state=link
+        src=selenium-server-standalone-{{ selenium_standalone_server_version }}.jar
+        dest={{ selenium_dest_dir }}/selenium-server-standalone-latest.jar

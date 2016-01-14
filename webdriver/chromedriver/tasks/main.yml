@@ -1,0 +1,31 @@
+---
+- name: install unzip and ansible requirements
+  apt: name={{ item }} cache_valid_time=86400 update_cache=yes
+  with_items:
+      - unzip
+      - python-httplib2
+
+- name: get page with link to the latest version of the Chrome Web Driver
+  uri: url=https://sites.google.com/a/chromium.org/chromedriver return_content=yes
+  register: chromedriver_webpage
+
+- name: get chromedriver installed version if any
+  shell: /usr/local/bin/chromedriver --version|awk {'print $2'}
+  failed_when: no
+  changed_when: no
+  register: chromedriver_local_version
+
+- name: define chromedriver version variable
+  set_fact:
+      chromedriver_version: "{{ chromedriver_webpage.content|replace('\n','')|regex_replace('^.*Latest Release[:] <a href=\"([^\"]+)\">ChromeDriver ([0-9,.]+)</a>.*$','\\2') }}"
+
+- name: define chromedriver url variable
+  set_fact:
+      chromedriver_url: http://chromedriver.storage.googleapis.com/{{ chromedriver_version }}/chromedriver_linux{{ '64' if ansible_architecture == 'x86_64' else '32' }}.zip
+
+- name: show url, latest version and local version if available
+  debug: msg="url{{ ':' }} {{ chromedriver_url }}, latest version{{ ':' }} {{ chromedriver_version }}, local version{{':'}} {{ chromedriver_local_version.stdout }}"
+
+- name: install chromedriver
+  unarchive: src={{ chromedriver_url }} dest={{ chromedriver_install_path }} copy=no
+  when: not chromedriver_local_version.stdout|match('[\d,.]+') or chromedriver_local_version.stdout|version_compare(chromedriver_version ,'<')

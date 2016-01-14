@@ -1,0 +1,28 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# defaultbox = "precise64"
+defaultbox = "ubuntu/trusty64"
+box = ENV['BOX'] || defaultbox
+ENV['ANSIBLE_ROLES_PATH'] = "../../"
+
+Vagrant.configure(2) do |config|
+
+  config.vm.box = box
+  
+  config.vm.define "selenium" do |selenium_cfg|
+    selenium_cfg.vm.network "private_network", type: "dhcp"
+    selenium_cfg.vm.provider :virtualbox do |v|
+      v.name = "selenium"
+    end
+  end
+  
+  config.vm.provision :ansible do |ansible|
+    ansible.playbook = "vagrant.yml"
+    ansible.sudo = true
+    ansible.groups = {
+            "vagrant" => ["selenium"],
+          }
+  end
+
+end

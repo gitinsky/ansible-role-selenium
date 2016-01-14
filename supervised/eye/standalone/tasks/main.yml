@@ -1,0 +1,5 @@
+- name: put eye config
+  template: src=selenium.rb dest=/etc/eye/selenium.rb
+  notify:
+      - reload eye
+      - eye restart selenium
