@@ -1,3 +1,6 @@
+- name: install xvfb
+  apt: name=xvfb cache_valid_time=86400 update_cache=yes
+      
 - name: put eye config
   template: src=selenium.rb dest=/etc/eye/selenium.rb
   notify:

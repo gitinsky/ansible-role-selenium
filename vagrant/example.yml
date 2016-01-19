@@ -6,4 +6,3 @@
       - selenium/client/javascript
       - selenium/webdriver/chromedriver
       - selenium/supervised/eye/standalone
-      - selenium/supervised/eye/webdriver/chromedriver

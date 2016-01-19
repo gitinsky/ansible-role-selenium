@@ -1,2 +1,2 @@
 dependencies:
-    - nodejs
+    - { role: nodejs, tags: nodejs }

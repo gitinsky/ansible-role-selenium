@@ -6,7 +6,7 @@ Eye.application 'selenium' do
 
   process :standalone do
     pid_file '/var/run/selenium.pid'
-    start_command 'java -jar {{ selenium_dest_dir }}/selenium-server-standalone-latest.jar'
+    start_command 'xvfb-run -a java -jar {{ selenium_dest_dir }}/selenium-server-standalone-latest.jar'
     daemonize true
     stdall '/var/log/eye/selenium-standalone-stdall.log'
     start_timeout 10.seconds

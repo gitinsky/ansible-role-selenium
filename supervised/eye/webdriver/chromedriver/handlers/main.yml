@@ -1,4 +1,0 @@
-- name: eye restart chromedriver
-  command: bash -c "source /usr/local/rvm/scripts/rvm && eye restart chromedriver"
-  sudo: yes
-  sudo_user: "root"
